@@ -3,7 +3,7 @@ package pl.silver.reflection;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class BeanMethod {
+public class BeanMethod implements SilverField{
 
 	private Method setter;
 	private Method getter;
@@ -33,12 +33,28 @@ public class BeanMethod {
 		return getter;
 	}
 
-	public Object getField(Object object) {
+	public void setField(Object orginalObject, Object newValue) {
+		try {
+			setter.invoke(orginalObject, newValue);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String getFieldName() {
+		return name;
+	}
+
+	public Object getFieldValue(Object orginalObject) {
 		if(getter == null || setter == null){
 			System.err.println("niepelny obiekt");
 		}
 		try {
-			return getter.invoke(object);
+			return getter.invoke(orginalObject);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
@@ -49,15 +65,16 @@ public class BeanMethod {
 		return null;
 	}
 
-	public void setField(Object orginal, Object newValue) {
-		try {
-			setter.invoke(orginal, newValue);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		}
+	public <T> T getFieldValue(Object orginalObject, Class<T> returnClass) {
+		Object getObject = getFieldValue(orginalObject);
+		return returnClass.cast(getObject);
+	}
+
+	public void setFieldValue(Object orginalObject, Object newValue) {
+		setField(orginalObject, newValue);
+	}
+
+	public Class getFieldValueClass() {
+		return getter.getReturnType();
 	}	
 }
