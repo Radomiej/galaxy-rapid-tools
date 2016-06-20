@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.utils.reflect.Method;
+
 public class ReflectionBean {
 	private Class reflectClass;
 	private Map<String, BeanMethod> fieldMethods;
@@ -47,4 +49,5 @@ public class ReflectionBean {
 		fieldsAccesor.addAll(getPublicFields());
 		return fieldsAccesor;
 	}
+
 }
